@@ -1,0 +1,39 @@
+version: '3.0'
+services:
+   grafana:
+     image: grafana/grafana:latest
+     ports:
+       - "3000:3000"
+     volumes:
+       - "grafana:/var/lib/grafana/"
+     depends_on:
+      - loki
+      - prometheus
+
+   loki:
+     image: grafana/loki:2.0.0
+     ports:
+      - "3100:3100"
+     volumes:
+      - "loki:/loki/"
+   promtail:
+     image: grafana/promtail:2.0.0
+     volumes:
+      - "/var/log:/var/log"
+   prometheus:
+     image: prom/prometheus:latest
+     ports:
+      - "9090:9090"
+   fluentd:
+     image: fluent/fluentd:latest
+     ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+     depends_on:
+      - loki
+
+    
+volumes:
+  loki:
+  grafana:
+
